@@ -7,7 +7,7 @@ import java.util.List;
 /*
  * Clase que representa a un viaje estándar
 */
-public class Viaje {
+public abstract class Viaje {
     private static int contadorCodigo = 1;
     private int codigoViatge;
     private Usuario propietario;
@@ -59,6 +59,7 @@ public class Viaje {
         }
         return false;
     }
+    
 
     // Otros métodos
     public void cerrarViatge() {
@@ -66,7 +67,7 @@ public class Viaje {
     }
 
     public void cancelarViatge() {
-        cancelado = true;
+        this.cancelado = true;
     }
 
     public int getCodigoViatge() {
@@ -105,11 +106,6 @@ public class Viaje {
         return cancelado;
     }
     
-    public String getTipo(){
-        
-        return "Estandard";
-    }
+     public abstract String getTipo();
     
 }
-
-

@@ -11,6 +11,7 @@ import es.progcipfpbatoi.model.entities.Usuario;
  * @author jeanm
  */
 public class ViajeFlexible extends ViajeCancelable {
+
     public ViajeFlexible(Usuario propietari, String ruta, int duracionMinutos, int plazasOfrecidas, double precioPorPlaza) {
         super(propietari, ruta, duracionMinutos, plazasOfrecidas, precioPorPlaza);
     }
@@ -26,4 +27,10 @@ public class ViajeFlexible extends ViajeCancelable {
         // Lógica para cambiar el precio del viaje
         return false; // Retornar true si el cambio se realizó con éxito
     }
+
+    @Override
+    public String getTipo() {
+        return "Flexible";
+    }
+
 }

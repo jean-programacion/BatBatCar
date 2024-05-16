@@ -8,6 +8,7 @@ import es.progcipfpbatoi.model.entities.types.ViajeFlexible;
 import es.progcipfpbatoi.model.managers.ViajesManager;
 import es.progcipfpbatoi.views.GestorIO;
 import es.progcipfpbatoi.views.ListadoViajesView;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ViajesController {
@@ -37,7 +38,7 @@ public class ViajesController {
             Viaje nuevo = null;
             switch (tipoViaje) {
                 case 1 -> {
-                    nuevo = new Viaje(usuario, ruta, duracion, plazas, precio);
+                    nuevo = new ViajeEstandar(usuario, ruta, duracion, plazas, precio) {};
                 }
                 case 2 -> {
                     nuevo = new ViajeCancelable(usuario, ruta, duracion, plazas, precio);
@@ -50,8 +51,8 @@ public class ViajesController {
                 }
             }
             viajesManager.add(nuevo);
-            
-        }else{
+
+        } else {
             GestorIO.print("Tipo de viaje incorrecto");
         }
 
@@ -60,4 +61,49 @@ public class ViajesController {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+    
+    
+
+    public void cancelarViaje() {
+        List<Viaje> viajes = viajesManager.buscarViajesDisponibles();
+        List<Viaje> viajesNoCancelados = new ArrayList<>();
+
+        // Filtramos los viajes que no estén cancelados y que pertenezcan al usuario actual
+        for (Viaje viaje : viajes) {
+            if (viaje.getPropietario().equals(usuario) && !viaje.isCancelado()) {
+                viajesNoCancelados.add(viaje);
+            }
+        }
+
+        if (viajesNoCancelados.isEmpty()) {
+            GestorIO.print("No tienes viajes disponibles para cancelar.");
+            return;
+        }
+
+        new ListadoViajesView(viajesNoCancelados).visualizar();
+
+        int codigoViaje = GestorIO.getInt("Introduce el código del viaje que deseas cancelar: ");
+
+        Viaje viajeSeleccionado = null;
+        for (Viaje viaje : viajesNoCancelados) {
+            if (viaje.getCodigoViatge() == codigoViaje) {
+                viajeSeleccionado = viaje;
+                break;
+            }
+        }
+
+        if (viajeSeleccionado == null) {
+            GestorIO.print("El código de viaje introducido no es válido.");
+            return;
+        }
+
+        if (viajeSeleccionado.isCancelado()) {
+            GestorIO.print("El viaje ya ha sido cancelado.");
+            return;
+        }
+
+        viajeSeleccionado.cancelarViatge();
+        GestorIO.print("El viaje ha sido cancelado con éxito.");
+    }
+
 }

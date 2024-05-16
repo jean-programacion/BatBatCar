@@ -9,9 +9,9 @@ import java.util.Scanner;
 /**
  * Clase que gestiona el menú de opciones. A partir de esta clase se ejecutan
  * las diferentes opciones del menú (casos de uso).
+ *
  * @author batoi
  */
-
 public class Menu {
 
     private static final int OPCION_SALIR = 9;
@@ -42,11 +42,11 @@ public class Menu {
         GestorIO.print("1. Establecer usuario (login)");
         GestorIO.print("2. Listar todos los viajes");
         GestorIO.print("3. Añadir viaje");
-        GestorIO.print("4. Realizar reserva");
-        GestorIO.print("5. Cancelar viaje");
+        GestorIO.print("4. Cancelar viaje ");
+        GestorIO.print("5. Realizar reserva");
         GestorIO.print("6. Modificar reserva");
-        GestorIO.print("7. Buscar viaje y realizar reserva");
-        GestorIO.print("8. Consulta reserva");
+        GestorIO.print("7. Cancelar reserva");
+        GestorIO.print("8. Buscar viaje y realizar reserva");
         GestorIO.print("9. Salir");
         GestorIO.print("Seleccione una opción [1-9]: ");
     }
@@ -95,19 +95,23 @@ public class Menu {
 
                 break;
             case 4:
-                
+                if (usuario != null) {
+                    viajesController.cancelarViaje();
+                } else {
+                    GestorIO.print("Tienes que que logearte antes de acceder!!!!");
+                }
                 break;
             case 5:
-                // Implementa la lògica per cancel·lar un viatge
+
                 break;
             case 6:
-                // Implementa la lògica per modificar una reserva
+
                 break;
             case 7:
-                // Implementa la lògica per buscar i realitzar una reserva
+
                 break;
             case 8:
-                // Implementa la lògica per consultar una reserva
+
                 break;
             case 9:
                 GestorIO.print("Gràcies per utilitzar BatBatCar. Fins aviat!");

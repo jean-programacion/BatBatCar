@@ -11,6 +11,7 @@ import es.progcipfpbatoi.model.entities.Usuario;
  * @author jeanm
  */
 public class ViajeExclusivo extends Viaje {
+
     private boolean primeraReservaRealizada;
 
     public ViajeExclusivo(Usuario propietario, String ruta, int duracionMinutos, int plazasOfrecidas, double precioPorPlaza) {
@@ -24,5 +25,10 @@ public class ViajeExclusivo extends Viaje {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String getTipo() {
+        return "Exclusivo";
     }
 }

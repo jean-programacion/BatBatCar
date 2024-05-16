@@ -23,5 +23,10 @@ public class ViajeCancelable extends Viaje {
             }
         }
         return false;
-    }   
+    }
+
+    @Override
+    public String getTipo() {
+        return "Cancelable";
+    }
 }
