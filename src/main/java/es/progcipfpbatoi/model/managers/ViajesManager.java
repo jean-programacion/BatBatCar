@@ -2,6 +2,8 @@ package es.progcipfpbatoi.model.managers;
 
 import es.progcipfpbatoi.model.entities.Usuario;
 import es.progcipfpbatoi.model.entities.types.Viaje;
+import es.progcipfpbatoi.model.entities.types.ViajeCancelable;
+import es.progcipfpbatoi.model.entities.types.ViajeFlexible;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,8 +61,17 @@ public class ViajesManager {
     }
 
     private void init() {
-        // añade a la colección "viajes" todos los viajes que creas necesario tener de inicio en tu sistema
-        // this.add(new Viaje(....));
+        Usuario propietario1 = new Usuario("sergio123", "password1");
+        Usuario propietario2 = new Usuario("raul00", "password2");
+        Usuario propietario3 = new Usuario("alex32", "password3");
+
+        this.add(new Viaje(propietario1, "Madrid-Murcia-Alicante", 120, 1, 5.00) {
+          
+        });
+        this.add(new ViajeCancelable(propietario2, "Madrid-Barcelona", 180, 1, 10.00));
+        this.add(new ViajeFlexible(propietario3, "Alcoy-Cocentaina", 30, 2, 2.00));
+        this.add(new Viaje(propietario1, "Alcoy-Alicante", 45, 3, 3.00));
+            
     }
 
     public Usuario autenticarUsuario(String nombreUsuario, String contrasena) {
@@ -77,4 +88,15 @@ public class ViajesManager {
         return viajes;
     }
 
+    /*public Viaje getViajeByCodigo(int codigoViaje) {
+        for (Viaje viaje : viajes) {
+            if (viaje.getCodigo() == codigoViaje) {
+                return viaje;
+            }
+        }
+        return null;
+    }*/
+
+    
+    
 }

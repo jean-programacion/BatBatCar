@@ -7,7 +7,7 @@ import java.util.List;
 /*
  * Clase que representa a un viaje estándar
 */
-public abstract class Viaje {
+public  class Viaje {
     private static int contadorCodigo = 1;
     private int codigoViatge;
     private Usuario propietario;
@@ -16,7 +16,7 @@ public abstract class Viaje {
     private int plazasOfrecidas;
     private int plazasReservadas;
     private double precioPorPlaza;
-    private boolean cerrado;
+    boolean cerrado;
     private boolean cancelado;
     private List<Reserva> reservasRealizadas;
 
@@ -43,7 +43,7 @@ public abstract class Viaje {
 
     public boolean realizarReserva(Usuario usuario, int numPlazasSolicitadas) {
         if (!cerrado && !cancelado && plazasReservadas + numPlazasSolicitadas <= plazasOfrecidas) {
-            Reserva reserva = new Reserva(usuario, numPlazasSolicitadas);
+            Reserva reserva = new Reserva(usuario, numPlazasSolicitadas, this);
             reservasRealizadas.add(reserva);
             plazasReservadas += numPlazasSolicitadas;
             return true;
@@ -62,7 +62,7 @@ public abstract class Viaje {
     
 
     // Otros métodos
-    public void cerrarViatge() {
+    protected void cerrarViatge() {
         cerrado = true;
     }
 
@@ -106,6 +106,29 @@ public abstract class Viaje {
         return cancelado;
     }
     
-     public abstract String getTipo();
+     //public abstract String getTipo();
     
+    public String getTipo(){
+        
+        return "Estandar";
+        
+    }
+
+    public int getPlazasOfertadas() {
+        return plazasOfrecidas;
+    }
+
+    public void setPlazasReservadas(int nuevasPlazasReservadas) {
+        this.plazasReservadas = nuevasPlazasReservadas;
+    }
+
+    public boolean isFlexible() {
+        return false;
+    }
+
+    public String getCodigo() {
+        return String.valueOf(codigoViatge);
+    }
+
+     
 }

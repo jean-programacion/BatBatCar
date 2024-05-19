@@ -29,4 +29,11 @@ public class ViajeCancelable extends Viaje {
     public String getTipo() {
         return "Cancelable";
     }
+    
+    
+    @Override
+    public void cerrarViatge() {
+        cerrado = true;
+    }
+
 }

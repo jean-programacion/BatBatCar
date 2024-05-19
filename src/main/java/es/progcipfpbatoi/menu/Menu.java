@@ -1,10 +1,14 @@
 package es.progcipfpbatoi.menu;
 
+import es.progcipfpbatoi.controller.ReservaController;
 import es.progcipfpbatoi.controller.UsuarioController;
 import es.progcipfpbatoi.controller.ViajesController;
 import es.progcipfpbatoi.model.entities.Usuario;
+import es.progcipfpbatoi.model.entities.types.Reserva;
+import es.progcipfpbatoi.model.managers.ReservaManager;
 import es.progcipfpbatoi.views.GestorIO;
-import java.util.Scanner;
+import java.util.ArrayList;
+
 
 /**
  * Clase que gestiona el menú de opciones. A partir de esta clase se ejecutan
@@ -19,11 +23,14 @@ public class Menu {
     private ViajesController viajesController;
     private UsuarioController usuarioController;
     private Usuario usuario;
+    private final ReservaController reservaController;
 
     public Menu() {
         this.viajesController = new ViajesController();
         this.usuarioController = new UsuarioController();
         this.usuario = null;
+         ReservaManager reservaManager = new ReservaManager(new ArrayList<>(), new ArrayList<>()); // Inicializar con listas vacías
+        this.reservaController = new ReservaController(usuario, reservaManager);
     }
 
     public void iniciar() {
@@ -52,35 +59,17 @@ public class Menu {
     }
 
     private int solicitarOpcion() {
-        Scanner teclado = new Scanner(System.in);
-        int opcion = -1;
-        boolean opcionValida = false;
-
-        while (!opcionValida) {
-            String input = teclado.nextLine();
-
-            if (input.matches("\\d+")) {
-                opcion = Integer.parseInt(input);
-                if (opcion >= 1 && opcion <= 9) {
-                    opcionValida = true;
-                } else {
-                    GestorIO.print("Opción no válida. Introduce un número del 1 al 9.");
-                }
-            } else {
-                GestorIO.print("Opción no válida. Introduce un número del 1 al 9.");
-            }
-        }
-
-        return opcion;
+        return GestorIO.getInt("Introduce una opcion",1,9);
     }
 
     private void ejecutarOpcion(int opcionSeleccionada) {
         switch (opcionSeleccionada) {
             case 1:
                 usuario = usuarioController.login(usuario);
-
-                viajesController.setUsuario(usuario);
-
+                 if (usuario != null) {
+                    viajesController.setUsuario(usuario);
+                    reservaController.setUsuario(usuario);
+                }
                 break;
             case 2:
                 viajesController.listarViajes();
@@ -102,16 +91,35 @@ public class Menu {
                 }
                 break;
             case 5:
-
+                if (usuario != null) {
+                   Reserva reserva = viajesController.realizarReserva();
+                    if (reserva != null) {
+                         reservaController.anyadirReserva(reserva);
+                    }
+                } else {
+                    GestorIO.print("Tienes que que logearte antes de acceder!!!!");
+                }
                 break;
             case 6:
-
+                if (usuario != null) {
+                    reservaController.modificarReserva();
+                } else {
+                    GestorIO.print("Tienes que que logearte antes de acceder!!!!");
+                }
                 break;
             case 7:
-
+                if (usuario != null) {
+                    viajesController.cancelarReserva();
+                } else {
+                    GestorIO.print("Tienes que logearte antes de acceder!!!!");
+                }
                 break;
             case 8:
-
+                if (usuario != null) {
+                    viajesController.buscarViajeYRealizarReserva();
+                } else {
+                    GestorIO.print("Tienes que logearte antes de acceder!!!!");
+                }
                 break;
             case 9:
                 GestorIO.print("Gràcies per utilitzar BatBatCar. Fins aviat!");
