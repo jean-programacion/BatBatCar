@@ -22,7 +22,7 @@ public class ViajesManager {
         this.viajes = new ArrayList<>();
         init();
     }
-
+    
     /**
      * Añade un nuevo viaje al repositorio
      *
@@ -47,7 +47,6 @@ public class ViajesManager {
      * @return
      */
     public int getNumViajes() {
-        // Implementación para obtener el número de viajes
         return viajes.size();
     }
 
@@ -84,19 +83,7 @@ public class ViajesManager {
     }
 
     public List<Viaje> buscarViajesDisponibles() {
-        // Implementación para buscar viajes disponibles
         return viajes;
     }
 
-    /*public Viaje getViajeByCodigo(int codigoViaje) {
-        for (Viaje viaje : viajes) {
-            if (viaje.getCodigo() == codigoViaje) {
-                return viaje;
-            }
-        }
-        return null;
-    }*/
-
-    
-    
 }

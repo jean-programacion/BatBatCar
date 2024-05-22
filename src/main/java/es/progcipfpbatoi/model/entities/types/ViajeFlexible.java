@@ -16,16 +16,12 @@ public class ViajeFlexible extends ViajeCancelable {
         super(propietari, ruta, duracionMinutos, plazasOfrecidas, precioPorPlaza);
     }
 
-    // Implementación específica para permitir cambios en la reserva
     public boolean modificarReserva(int codigoReserva, int nuevasPlazasSolicitadas) {
-        // Lógica para modificar la reserva y cambiar el número de plazas
-        return false; // Retornar true si la modificación se realizó con éxito
+        return false;
     }
 
-    // Implementación específica para permitir cambios en el precio del viaje
     public boolean cambiarPrecio(double nuevoPrecio) {
-        // Lógica para cambiar el precio del viaje
-        return false; // Retornar true si el cambio se realizó con éxito
+        return false;
     }
 
     @Override

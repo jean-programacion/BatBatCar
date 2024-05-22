@@ -51,10 +51,6 @@ public class Reserva {
        return this.numPlazasSolicitadas = numPlazasSolicitadas;
     }
     
-    /*public int getPlazas() {
-        return numPlazasSolicitadas;
-    }*/
-    
      @Override
     public String toString() {
         return "Reserva{" +
@@ -68,9 +64,5 @@ public class Reserva {
     public void setPlazas(int nuevasPlazas) {
         this.numPlazasSolicitadas = nuevasPlazas;
     }
-
-    
-
-    
 
 }

@@ -6,9 +6,9 @@ import es.progcipfpbatoi.controller.ViajesController;
 import es.progcipfpbatoi.model.entities.Usuario;
 import es.progcipfpbatoi.model.entities.types.Reserva;
 import es.progcipfpbatoi.model.managers.ReservaManager;
+import es.progcipfpbatoi.model.managers.ViajesManager;
 import es.progcipfpbatoi.views.GestorIO;
 import java.util.ArrayList;
-
 
 /**
  * Clase que gestiona el menú de opciones. A partir de esta clase se ejecutan
@@ -26,10 +26,12 @@ public class Menu {
     private final ReservaController reservaController;
 
     public Menu() {
-        this.viajesController = new ViajesController();
+        ViajesManager viajesManager = new ViajesManager();
+        ReservaManager reservaManager = new ReservaManager(new ArrayList<>(), new ArrayList<>());
+
+        this.viajesController = new ViajesController(viajesManager, reservaManager);
         this.usuarioController = new UsuarioController();
         this.usuario = null;
-         ReservaManager reservaManager = new ReservaManager(new ArrayList<>(), new ArrayList<>()); // Inicializar con listas vacías
         this.reservaController = new ReservaController(usuario, reservaManager);
     }
 
@@ -59,14 +61,14 @@ public class Menu {
     }
 
     private int solicitarOpcion() {
-        return GestorIO.getInt("Introduce una opcion",1,9);
+        return GestorIO.getInt("Introduce una opcion", 1, 9);
     }
 
     private void ejecutarOpcion(int opcionSeleccionada) {
         switch (opcionSeleccionada) {
             case 1:
                 usuario = usuarioController.login(usuario);
-                 if (usuario != null) {
+                if (usuario != null) {
                     viajesController.setUsuario(usuario);
                     reservaController.setUsuario(usuario);
                 }
@@ -92,9 +94,9 @@ public class Menu {
                 break;
             case 5:
                 if (usuario != null) {
-                   Reserva reserva = viajesController.realizarReserva();
+                    Reserva reserva = viajesController.realizarReserva();
                     if (reserva != null) {
-                         reservaController.anyadirReserva(reserva);
+                        reservaController.anyadirReserva(reserva);
                     }
                 } else {
                     GestorIO.print("Tienes que que logearte antes de acceder!!!!");
@@ -108,11 +110,7 @@ public class Menu {
                 }
                 break;
             case 7:
-                if (usuario != null) {
-                    viajesController.cancelarReserva();
-                } else {
-                    GestorIO.print("Tienes que logearte antes de acceder!!!!");
-                }
+                reservaController.cancelarReserva();
                 break;
             case 8:
                 if (usuario != null) {

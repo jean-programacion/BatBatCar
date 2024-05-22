@@ -106,8 +106,6 @@ public  class Viaje {
         return cancelado;
     }
     
-     //public abstract String getTipo();
-    
     public String getTipo(){
         
         return "Estandar";

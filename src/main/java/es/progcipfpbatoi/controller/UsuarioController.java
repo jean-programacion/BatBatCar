@@ -53,7 +53,7 @@ public class UsuarioController {
     }
 
     private void usuarios() {
-        users.add(new Usuario("jean", "1234"));
+        users.add(new Usuario("roberto1979", "12345"));
 
     }
 

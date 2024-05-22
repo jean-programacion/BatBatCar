@@ -6,6 +6,7 @@ import es.progcipfpbatoi.model.entities.types.Viaje;
 import es.progcipfpbatoi.model.entities.types.ViajeCancelable;
 import es.progcipfpbatoi.model.entities.types.ViajeExclusivo;
 import es.progcipfpbatoi.model.entities.types.ViajeFlexible;
+import es.progcipfpbatoi.model.managers.ReservaManager;
 import es.progcipfpbatoi.model.managers.ViajesManager;
 import es.progcipfpbatoi.views.GestorIO;
 import es.progcipfpbatoi.views.ListadoViajesView;
@@ -16,9 +17,11 @@ public class ViajesController {
 
     private Usuario usuario;
     private ViajesManager viajesManager;
+    private ReservaManager reservaManager;
 
-    public ViajesController() {
-        this.viajesManager = new ViajesManager();
+   public ViajesController(ViajesManager viajesManager, ReservaManager reservaManager) {
+        this.viajesManager = viajesManager;
+        this.reservaManager = reservaManager;
         this.usuario = null;
     }
 
@@ -39,7 +42,8 @@ public class ViajesController {
             Viaje nuevo = null;
             switch (tipoViaje) {
                 case 1 -> {
-                    nuevo = new Viaje(usuario, ruta, duracion, plazas, precio) {};
+                    nuevo = new Viaje(usuario, ruta, duracion, plazas, precio) {
+                    };
                 }
                 case 2 -> {
                     nuevo = new ViajeCancelable(usuario, ruta, duracion, plazas, precio);
@@ -62,17 +66,6 @@ public class ViajesController {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-        
-    /*public void cancelarViaje(int codigo){
-        List<Viaje> viajes = getViajesCancelables();
-        Viaje v = new Viaje(codigo);
-        if(isValido(codigo) && viajes.remove(v)){
-            gestor.cancel(v);
-            GestorIO.print("El viaje se ha cancelado exitosamente");
-        }else{
-            GestorIO.print("El viaje no se ha podido cancelar, intentalo de nuevo");
-        }
-    }*/
 
     public void cancelarViaje() {
         List<Viaje> viajes = viajesManager.buscarViajesDisponibles();
@@ -101,8 +94,6 @@ public class ViajesController {
                 break;
             }
         }
-        
-        
 
         if (viajeSeleccionado == null) {
             GestorIO.print("El código de viaje introducido no es válido.");
@@ -118,7 +109,7 @@ public class ViajesController {
         GestorIO.print("El viaje ha sido cancelado con éxito.");
 
     }
-    
+
     public Reserva realizarReserva() {
         if (usuario == null) {
             GestorIO.print("Error: No hay usuario autenticado.");
@@ -128,7 +119,7 @@ public class ViajesController {
         List<Viaje> viajesReservables = obtenerViajesReservables();
         if (viajesReservables.isEmpty()) {
             GestorIO.print("No hay viajes disponibles para reservar.");
-              return null;
+            return null;
         }
 
         new ListadoViajesView(viajesReservables).visualizar();
@@ -138,7 +129,7 @@ public class ViajesController {
 
         if (viajeSeleccionado == null) {
             GestorIO.print("El código de viaje introducido no es válido.");
-              return null;
+            return null;
         }
 
         int numPlazas = GestorIO.getInt("Introduce el número de plazas a reservar: ");
@@ -147,15 +138,15 @@ public class ViajesController {
             Reserva reserva = obtenerReserva(viajeSeleccionado, usuario, numPlazas);
             if (reserva != null) {
                 new TicketReservaView(reserva).visualizar();
-                   return reserva;
+                return reserva;
             } else {
                 GestorIO.print("Error al realizar la reserva.");
             }
         } else {
             GestorIO.print("No se pudo realizar la reserva. Verifica las plazas disponibles.");
         }
-        
-           return null;
+
+        return null;
     }
 
     private List<Viaje> obtenerViajesReservables() {
@@ -188,17 +179,57 @@ public class ViajesController {
         return null;
     }
 
-    public void cancelarReserva() {
-        // Implementación de cancelar reserva
-    }
-
     public void buscarViajeYRealizarReserva() {
-        // Implementación de buscar viaje y realizar reserva
+        if (usuario == null) {
+            GestorIO.print("Error: No hay usuario autenticado.");
+            return;
+        }
+
+        String ciudadDestino = GestorIO.getString("Introduce la ciudad de destino: ");
+
+        List<Viaje> viajesDisponibles = viajesManager.buscarViajesDisponibles();
+        List<Viaje> viajesFiltrados = new ArrayList<>();
+
+        for (Viaje viaje : viajesDisponibles) {
+            if (viaje.getRuta().contains(ciudadDestino) && !viaje.getPropietario().equals(usuario)) {
+                viajesFiltrados.add(viaje);
+            }
+        }
+
+        if (viajesFiltrados.isEmpty()) {
+            GestorIO.print("No se encontraron viajes que pasen por " + ciudadDestino + ".");
+            return;
+        }
+
+        new ListadoViajesView(viajesFiltrados).visualizar();
+
+        String respuesta = GestorIO.getString("¿Desea realizar una reserva en algún viaje? (si/no): ");
+        if (!respuesta.equalsIgnoreCase("si")) {
+            return;
+        }
+
+        int codigoViaje = GestorIO.getInt("Introduce el código del viaje a reservar: ");
+        Viaje viajeSeleccionado = buscarViajePorCodigo(viajesFiltrados, codigoViaje);
+
+        if (viajeSeleccionado == null) {
+            GestorIO.print("El código de viaje introducido no es válido.");
+            return;
+        }
+
+        int numPlazas = GestorIO.getInt("Introduce el número de plazas a reservar: ");
+
+        if (viajeSeleccionado.realizarReserva(usuario, numPlazas)) {
+            Reserva reserva = new Reserva(usuario, numPlazas, viajeSeleccionado);
+            reservaManager.addReserva(reserva);
+            new TicketReservaView(reserva).visualizar();
+            GestorIO.print("Reserva realizada con éxito.");
+        } else {
+            GestorIO.print("No se pudo realizar la reserva. Verifica las plazas disponibles.");
+        }
     }
 
     public ViajesManager getViajesManager() {
         return viajesManager;
     }
-
 
 }

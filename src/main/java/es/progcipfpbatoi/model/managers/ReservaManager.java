@@ -38,6 +38,8 @@ public class ReservaManager {
         return reservas;
     }
     
+     public void removeReserva(Reserva reserva) {
+        reservas.remove(reserva);
+    }
     
-
 }

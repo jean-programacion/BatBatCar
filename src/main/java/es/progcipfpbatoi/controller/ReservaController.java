@@ -10,11 +10,9 @@ import es.progcipfpbatoi.model.entities.types.Viaje;
 import es.progcipfpbatoi.model.entities.types.ViajeFlexible;
 import es.progcipfpbatoi.model.managers.ReservaManager;
 
-import es.progcipfpbatoi.model.managers.ViajesManager;
 import es.progcipfpbatoi.views.GestorIO;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  *
@@ -40,16 +38,7 @@ public class ReservaController {
             return;
         }
 
-        /* List<Reserva> reservasUsuario = getReservasByUsuario(usuario);
-        if (reservasUsuario.isEmpty()) {
-            GestorIO.print("No tienes reservas modificables.");
-            return;
-        }
-
-        mostrarReservas(reservasUsuario);*/
-        Scanner scanner = new Scanner(System.in);
-        GestorIO.print("Introduce el código de reserva a modificar: ");
-        int codigoReserva = scanner.nextInt();
+        int codigoReserva = GestorIO.getInt("Introduce el código de reserva a modificar: ");
 
         Reserva reserva = getReservaByCodigo(codigoReserva);
         if (reserva == null) {
@@ -57,24 +46,50 @@ public class ReservaController {
             return;
         }
         if (reserva.getViaje() instanceof ViajeFlexible) {
-            GestorIO.print("Introduce el número de plazas a reservar: ");
-            int nuevasPlazas = scanner.nextInt();
-            
+            int nuevasPlazas = GestorIO.getInt("Introduce el número de plazas a reservar: ");
+
             if (modificarReserva(reserva, nuevasPlazas)) {
                 GestorIO.print("Reserva modificada con éxito. A continuación se mostrará el ticket de confirmación.");
                 mostrarTicketConfirmacion(reserva);
             } else {
                 GestorIO.print("No quedan suficientes plazas.");
             }
-        }else{
+        } else {
             GestorIO.print("Solo se permite modificar los viajes Flexibles");
         }
     }
-    
+
+    public void cancelarReserva() {
+        if (usuario == null) {
+            GestorIO.print("Debes estar logueado para cancelar una reserva.");
+            return;
+        }
+
+        List<Reserva> reservasUsuario = getReservasByUsuario(usuario);
+        if (reservasUsuario.isEmpty()) {
+            GestorIO.print("No tienes reservas para cancelar.");
+            return;
+        }
+
+        mostrarReservas(reservasUsuario);
+        int codigoReserva = GestorIO.getInt("Introduce el código de reserva a cancelar: ");
+
+        Reserva reserva = getReservaByCodigo(codigoReserva);
+        if (reserva == null) {
+            GestorIO.print("Código de reserva no encontrado.");
+            return;
+        }
+
+        reservaManager.removeReserva(reserva);
+        GestorIO.print("Reserva cancelada con éxito.");
+
+    }
+
+   
     private List<Reserva> getReservasByUsuario(Usuario usuario) {
         List<Reserva> reservasUsuario = new ArrayList<>();
         for (Reserva reserva : reservaManager.getReservas()) {
-            if (reserva.getUsuario().equals(usuario) && reserva.getViaje().isFlexible() && !reserva.getViaje().isCancelado()) {
+            if (reserva.getUsuario().equals(usuario)) {
                 reservasUsuario.add(reserva);
             }
         }
